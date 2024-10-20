@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 나의 운세</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+        
+        body {
+            font-family: 'Nanum Pen Script', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fce4ec;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff80ab' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 80%;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translatey(0px); }
+            50% { transform: translatey(-10px); }
+            100% { transform: translatey(0px); }
+        }
+        h1 {
+            color: #f06292;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        #userName {
+            font-weight: bold;
+            color: #ec407a;
+        }
+        #fortune {
+            font-size: 2.2rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: #f8bbd0;
+            border-radius: 15px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ad1457;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            line-height: 1.4;
+        }
+        .emoji {
+            font-size: 2.5rem;
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🌟</span><span id="userName"></span>님의 운세<span class="emoji">🌟</span></h1>
+        <div id="fortune"></div>
+    </div>
+
+    <script>
+        const fortunes = [
+            "오늘은 행운이 가득한 날이에요! 새로운 도전을 시작해보는 건 어떨까요? 🍀",
+            "힘들어 보이는 일도 당신의 노력으로 충분히 이겨낼 수 있어요! 힘내세요! 💪",
+            "오래된 친구로부터 반가운 소식이 있을 거예요. 기대해도 좋아요! 📮",
+            "금전운이 좋아요. 소소한 투자도 좋은 결과를 가져올 수 있어요. 💰",
+            "건강에 유의하세요. 가벼운 운동이 도움이 될 거예요. 건강이 최고의 재산이에요! 🏃‍♀️",
+            "가족과 함께하는 시간을 가져보세요. 좋은 추억이 될 거예요! 👨‍👩‍👧‍👦",
+            "새로운 취미를 시작하기 좋은 날이에요. 뭔가 재미있는 걸 배워보는 건 어떨까요? 🎨",
+            "업무에서 큰 성과를 이룰 수 있는 날이에요. 자신감을 가지세요! 📈",
+            "주변 사람들과의 대화가 필요한 시기예요. 마음을 열고 소통해보세요. 💬",
+            "여행을 떠나보는 건 어떨까요? 새로운 경험이 당신을 기다리고 있어요! ✈️",
+            "오늘은 독서하기 좋은 날이에요. 새로운 지식을 얻어보세요. 📚",
+            "창의력이 높아지는 날이에요. 새로운 아이디어를 기록해보세요. 💡",
+            "오늘 하루 감사한 일들을 생각해보세요. 긍정적인 에너지가 당신을 감쌀 거예요. 🙏",
+            "작은 친절을 베풀어보세요. 그 작은 행동이 큰 행복으로 돌아올 거예요. 😊",
+            "과거의 실수를 반복하지 않도록 주의하세요. 현재에 집중하세요! 🕰️",
+            "당신의 직감을 믿으세요. 좋은 선택을 할 수 있을 거예요. 🎯",
+            "오늘은 휴식이 필요한 날이에요. 충분한 휴식을 취하고 재충전하세요. 😴",
+            "새로운 사람을 만나게 될 거예요. 좋은 인연이 될 수 있어요! 🤝",
+            "오늘 하루 집중력이 높아져요. 중요한 일을 처리하기 좋은 날이에요. 🧠",
+            "금전적인 지출에 주의가 필요해요. 불필요한 소비는 줄이세요. 💸",
+            "가까운 사람에게 감사의 마음을 전해보세요. 작은 말 한마디가 큰 기쁨이 될 거예요. 💌",
+            "오늘은 자신을 돌아보는 시간을 가져보세요. 내면의 목소리에 귀 기울여보세요. 🧘‍♀️",
+            "작은 변화가 큰 결과를 가져올 수 있는 날이에요. 용기를 내세요! 🦋",
+            "오늘 하루 웃음이 가득할 거예요. 행복한 하루를 보내세요! 😄",
+            "어려운 결정을 내려야 할 때예요. 신중히 생각하고 결정하세요. ⚖️",
+            "오래된 문제가 해결될 수 있는 날이에요. 희망을 가지세요! 🌈",
+            "새로운 기회가 찾아올 거예요. 놓치지 말고 잡으세요! 🚀",
+            "오늘은 체력 관리에 신경 쓰세요. 건강이 가장 중요해요. 🍎",
+            "주변 사람들의 조언에 귀 기울여보세요. 도움이 될 거예요. 👂",
+            "긍정적인 마인드가 행운을 불러올 거예요. 밝은 미소를 잃지 마세요! 😃",
+            "오늘 하루 계획대로 잘 흘러갈 거예요. 자신감을 가지고 임하세요! 📅",
+            "새로운 도전에 대한 두려움을 극복하세요. 좋은 결과가 있을 거예요! 🏆",
+            "오늘은 자신감이 넘치는 날이에요. 적극적으로 행동해보세요! 🦁",
+            "소중한 사람과의 관계를 돌아보세요. 작은 관심이 큰 변화를 만들어요. 💑",
+            "작은 성공이 큰 성공으로 이어질 거예요. 꾸준히 노력하세요! 🌱",
+            "오늘 하루 좋아하는 음악을 들어보세요. 기분이 좋아질 거예요! 🎵",
+            "새로운 학습에 도전해보세요. 지식이 당신의 힘이 될 거예요! 🎓",
+            "오늘은 직감이 예리해지는 날이에요. 중요한 선택에 활용해보세요. 🔮",
+            "주변을 둘러보세요. 감사할 일들이 많이 있을 거예요. 행복은 가까이에 있답니다! 🌺",
+            "오늘 하루 열심히 노력하세요. 그 노력이 곧 아름다운 결실을 맺을 거예요! 💪🌟"
+        ];
+
+        function getFortuneByName(name) {
+            let sum = 0;
+            for (let i = 0; i < name.length; i++) {
+                sum += name.charCodeAt(i);
+            }
+            return fortunes[sum % fortunes.length];
+        }
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        window.onload = function() {
+            const name = getUrlParameter('name') || '방문자';
+            document.getElementById('userName').textContent = name;
+            document.getElementById('fortune').innerHTML = getFortuneByName(name);
+        };
+    </script>
+</body>
+</html>

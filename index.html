@@ -45,6 +45,20 @@
             font-size: 2.5em;
             margin: 15px 0;
         }
+        #newFortuneBtn {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        #newFortuneBtn:hover {
+            background-color: #7821c4;
+        }
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -70,10 +84,10 @@
         <p><span id="name"></span>님의 운세입니다</p>
         <div class="icon">✨</div>
         <p id="fortune"></p>
+        <button id="newFortuneBtn">새로운 운세 보기</button>
     </div>
 
     <script>
-        function getRandomFortune() {
             const fortunes = [
                 "오늘은 예상치 못한 기회가 찾아올 것입니다. 기회를 잡기 위해서는 과감하게 행동하는 것이 좋습니다.",
                 "가까운 사람과의 대화에서 중요한 정보를 얻을 수 있습니다. 이 정보를 잘 활용하세요.",
@@ -133,14 +147,31 @@
                 "무리하지 않는 것이 중요합니다. 천천히 하지만 꾸준하게 나아가세요.",
                 "좋은 소식이 곧 찾아옵니다. 기다리던 일의 진전이 있을 것입니다."
             ];
+
+
+        function getRandomFortune() {
             return fortunes[Math.floor(Math.random() * fortunes.length)];
+        }
+
+        function setFortune(name) {
+            let fortune = localStorage.getItem('fortune');
+            if (!fortune) {
+                fortune = getRandomFortune();
+                localStorage.setItem('fortune', fortune);
+            }
+            document.getElementById('name').textContent = name;
+            document.getElementById('fortune').textContent = fortune;
         }
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const name = urlParams.get('name') || '방문자';
-            document.getElementById('name').textContent = name;
-            document.getElementById('fortune').textContent = getRandomFortune();
+            setFortune(name);
+
+            document.getElementById('newFortuneBtn').addEventListener('click', function() {
+                localStorage.removeItem('fortune');
+                setFortune(name);
+            });
         }
     </script>
 </body>

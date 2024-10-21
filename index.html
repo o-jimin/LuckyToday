@@ -6,12 +6,8 @@
     <title>오늘의 운세</title>
     <style>
         body {
-            font-family: 'Nanum Gothic', sans-serif;
+            font-family: 'Nanum Gothic', Arial, sans-serif;
             background-color: #f0e6ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -21,59 +17,75 @@
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         h1 {
             color: #8a2be2;
-            font-size: 2em;
+            font-size: 2.2em;
+            text-align: center;
             margin-bottom: 15px;
         }
         #name {
-            font-size: 1.1em;
+            font-size: 1.2em;
             font-weight: bold;
             color: #4b0082;
+            text-align: center;
         }
-        #fortune {
-            font-size: 1em;
-            margin-top: 15px;
+        .overall-fortune {
+            background-color: #e6e6fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            font-size: 1.2em;
+            color: #4b0082;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
             line-height: 1.6;
+            font-weight: 500;
+        }
+        .fortune-category {
+            margin-top: 15px;
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+        .fortune-category h2 {
+            color: #8a2be2;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .fortune-category h2 .icon {
+            margin-right: 8px;
+            font-size: 1.3em;
+        }
+        .fortune-category p {
+            font-size: 0.95em;
+            line-height: 1.5;
             color: #333;
+            margin-top: 0;
         }
-        .icon {
-            font-size: 2.5em;
-            margin: 15px 0;
-        }
-        #newFortuneBtn {
-            background-color: #8a2be2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
+        #date {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
             margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-        #newFortuneBtn:hover {
-            background-color: #7821c4;
         }
         @media (max-width: 480px) {
             body {
                 padding: 10px;
             }
             h1 {
-                font-size: 1.8em;
+                font-size: 2em;
             }
-            #name {
-                font-size: 1em;
-            }
-            #fortune {
+            #name, .fortune-category p {
                 font-size: 0.9em;
             }
-            .icon {
-                font-size: 2em;
+            .overall-fortune {
+                font-size: 1.1em;
             }
         }
     </style>
@@ -81,96 +93,188 @@
 <body>
     <div class="container">
         <h1>🔮 오늘의 운세 🔮</h1>
-        <p><span id="name"></span>님의 운세입니다</p>
-        <div class="icon">✨</div>
-        <p id="fortune"></p>
+        <p id="name"></p>
+        <div class="overall-fortune" id="overall"></div>
+        <div id="fortunes"></div>
+        <p id="date"></p>
     </div>
 
     <script>
-            const fortunes = [
-                "오늘은 예상치 못한 기회가 찾아올 것입니다. 기회를 잡기 위해서는 과감하게 행동하는 것이 좋습니다.",
-                "가까운 사람과의 대화에서 중요한 정보를 얻을 수 있습니다. 이 정보를 잘 활용하세요.",
-                "작은 노력이 큰 성과로 이어지는 날입니다. 꾸준함이 중요합니다.",
-                "오늘은 중요한 결정을 내리기보다는 상황을 조금 더 지켜보는 것이 좋습니다.",
-                "건강에 신경 쓰면 에너지가 더 충만해질 것입니다. 운동이나 명상을 해보세요.",
-                "새로운 취미를 시작하기에 좋은 날입니다. 오래도록 즐길 수 있는 활동을 찾아보세요.",
-                "계획한 일이 조금씩 풀릴 것입니다. 시간을 두고 차분하게 진행하세요.",
-                "주변 사람들과의 협력 속에서 큰 성과를 얻을 수 있는 날입니다. 협업에 신경 쓰세요.",
-                "오늘은 재정적인 면에서 행운이 따를 것입니다. 기회가 있을 때 투자에 대해 고려해보세요.",
-                "곧 당신을 위한 특별한 소식이 들려올 것입니다. 기대해도 좋습니다.",
-                "이전에 힘들게 느껴졌던 일이 이제는 쉬워질 것입니다. 더 이상 주저하지 말고 도전하세요.",
-                "자신의 직감을 믿어야 할 때입니다. 마음이 이끄는 대로 가면 좋은 결과가 있을 것입니다.",
-                "오늘은 당신이 그동안 노력했던 일이 빛을 발하는 날입니다. 자랑스러워해도 좋습니다.",
-                "가족이나 친구와의 시간을 소중히 하세요. 그들과의 교류가 당신에게 큰 위로가 될 것입니다.",
-                "오늘은 감정적으로 민감해질 수 있습니다. 침착하게 대응하는 것이 필요합니다.",
-                "예상하지 못한 곳에서 큰 도움이 찾아옵니다. 감사의 마음을 표현하세요.",
-                "오늘은 자기 자신에게 집중할 때입니다. 혼자만의 시간을 가지며 자신을 돌아보세요.",
-                "계획하지 않은 여행이나 이동이 행운을 가져다줄 수 있습니다. 열린 마음으로 임하세요.",
-                "오늘은 과거의 일에 얽매이기보다는 새로운 시작을 준비하는 것이 좋습니다.",
-                "오랜만에 연락을 주고받은 사람과 좋은 인연이 이어질 것입니다.",
-                "새로운 기회를 잡으려면 현재의 편안함에서 벗어나는 용기가 필요합니다.",
-                "작은 변화가 큰 성과로 이어질 것입니다. 오늘의 선택이 중요한 역할을 할 수 있습니다.",
-                "오늘은 특별한 날입니다. 평소보다 자신감 있게 행동하면 좋은 결과가 따를 것입니다.",
-                "인내심이 필요한 날입니다. 서두르지 말고 천천히 진행하세요.",
-                "오늘은 직장에서 인정받는 일이 생길 것입니다. 당신의 능력을 믿고 최선을 다하세요.",
-                "오늘 만나는 사람이 당신에게 중요한 영향을 미칠 수 있습니다. 모든 만남을 소중히 하세요.",
-                "혼자보다는 팀으로 일할 때 더 좋은 성과를 얻을 수 있습니다. 협력의 중요성을 기억하세요.",
-                "당신의 노력은 곧 보상을 받을 것입니다. 지금은 조금 더 힘을 내야 할 때입니다.",
-                "미래에 대한 계획을 세우는 것이 오늘은 특히 유리합니다. 구체적인 목표를 설정하세요.",
-                "오늘은 새로운 학문이나 기술을 배우기에 좋은 날입니다. 당신의 성장에 큰 도움이 될 것입니다.",
-                "누군가 당신을 돕고 싶어 합니다. 도움을 주저하지 말고 받아들여 보세요.",
-                "평소보다 더 많은 에너지가 넘치는 날입니다. 이 기운을 긍정적인 일에 사용하세요.",
-                "오늘은 불필요한 논쟁을 피하는 것이 좋습니다. 평화로운 태도가 당신을 보호할 것입니다.",
-                "과거의 실수를 떠올리는 대신, 오늘의 성취에 집중하세요. 더 나은 미래가 다가오고 있습니다.",
-                "금전적인 운이 상승하는 날입니다. 작은 수익이 생길 수 있으니 기회를 놓치지 마세요.",
-                "오늘은 주변 사람들에게 감사의 마음을 표현하기 좋은 날입니다. 따뜻한 말 한마디가 큰 변화를 일으킬 수 있습니다.",
-                "자신의 능력을 과소평가하지 마세요. 당신은 생각보다 더 많은 것을 이룰 수 있는 사람입니다.",
-                "오늘은 중요한 인연을 만날 수 있는 날입니다. 만남의 기회를 놓치지 마세요.",
-                "오랫동안 기다려온 일이 성사될 가능성이 큽니다. 끈기 있게 기다리면 좋은 결과가 있을 것입니다.",
-                "오늘은 과거의 후회보다 미래의 가능성에 집중해야 할 때입니다. 새로운 시도를 두려워하지 마세요.",
-                "작은 성과라도 기뻐할 수 있는 마음가짐이 필요합니다. 행복은 마음속에 있습니다.",
-                "당신의 주변에 긍정적인 에너지가 가득합니다. 그 에너지를 다른 사람들과 나누세요.",
-                "오늘은 새로운 목표를 설정하고 이를 달성하기 위한 첫걸음을 내딛기 좋은 날입니다.",
-                "도전에 대한 두려움보다는 성공에 대한 확신을 가져야 할 때입니다. 자신을 믿으세요.",
-                "당신의 열정이 주변 사람들에게 좋은 영향을 미칠 것입니다. 긍정적인 기운을 퍼뜨리세요.",
-                "오늘은 잠시 여유를 가지며 휴식을 취하기 좋은 날입니다. 지나친 욕심은 피하세요.",
-                "자신을 믿고 앞을 향해 나아가세요. 모든 일이 순조롭게 풀릴 것입니다.",
-                "어려운 상황에서도 웃음을 잃지 마세요. 곧 좋은 일이 생길 것입니다.",
-                "주변 사람들의 도움을 받아 어려운 문제를 해결할 수 있습니다. 함께라면 더 강해질 것입니다.",
-                "오늘은 혼자보다는 누군가와 함께 시간을 보내는 것이 좋습니다. 함께하는 시간이 큰 기쁨을 줄 것입니다.",
-                "작은 목표를 달성하면 큰 만족감을 얻을 수 있습니다. 한 걸음씩 나아가세요.",
-                "긍정적인 마음가짐이 오늘 당신의 행운을 끌어당길 것입니다.",
-                "어려움이 있을 때일수록 주변 사람들과의 관계를 소중히 하세요. 그들이 큰 힘이 되어줄 것입니다.",
-                "당신의 결단력이 중요한 순간입니다. 오늘 내린 결정이 미래에 큰 영향을 미칠 것입니다.",
-                "오늘은 새로운 일을 시작하기 좋은 날입니다. 망설이지 말고 도전하세요.",
-                "무리하지 않는 것이 중요합니다. 천천히 하지만 꾸준하게 나아가세요.",
-                "좋은 소식이 곧 찾아옵니다. 기다리던 일의 진전이 있을 것입니다."
-            ];
+        const fortuneCategories = {
+            overall: [
+                "오늘은 당신에게 특별한 행운이 따를 것입니다. 새로운 기회를 기대해보세요.",
+                "조용하면서도 긍정적인 변화가 시작될 수 있는 날입니다.",
+                "예상치 못한 기회가 찾아올 수 있으니 열린 마음으로 받아들이세요.",
+                "하루 종일 긍정적인 에너지가 당신을 감쌀 것입니다.",
+                "오늘은 자신감이 필요한 날입니다. 당신의 결정을 믿어보세요.",
+                "평소보다 집중력이 높아지는 하루가 될 것입니다.",
+                "주변 사람들과의 관계가 더욱 돈독해질 것입니다.",
+                "오래 기다려온 일이 성사될 수 있는 날입니다.",
+                "작은 노력이 큰 결실로 이어질 수 있으니 포기하지 마세요.",
+                "오늘은 일상에서 벗어나 새로운 도전을 시도해볼 가치가 있습니다.",
+                "예상치 못한 도움이 찾아올 수 있는 날입니다.",
+                "마음의 평화를 유지하면 더 큰 성취가 따를 것입니다.",
+                "오래된 문제가 해결될 수 있는 중요한 전환점입니다.",
+                "주변의 작은 기쁨을 발견하고 누리는 하루가 될 것입니다.",
+                "큰 결정을 내리기 전에 차분히 생각하고 신중하게 선택하세요.",
+                "오늘은 당신의 리더십이 빛을 발할 순간입니다.",
+                "평소보다 더 많은 에너지가 넘치는 하루가 될 것입니다.",
+                "어려운 상황에서도 끝까지 버텨내면 좋은 결과가 따를 것입니다.",
+                "당신의 창의력이 발휘될 기회가 찾아올 수 있습니다.",
+                "오늘은 직감에 따라 움직이면 좋은 결과를 얻을 수 있습니다."
+            ],
+            love: [
+                "오늘은 사랑이 넘치는 하루가 될 것입니다. 따뜻한 감정을 나누어보세요.",
+                "연인과의 관계가 더욱 깊어질 수 있는 날입니다.",
+                "새로운 만남이 기다리고 있을 수 있으니 마음을 열어보세요.",
+                "오랜 친구와의 인연이 더욱 돈독해질 수 있습니다.",
+                "솔로라면 오늘 특별한 이성을 만날 기회가 있습니다.",
+                "사랑하는 사람과의 오해가 풀리고 화해의 기회가 올 것입니다.",
+                "감정 표현이 중요한 날입니다. 솔직한 마음을 전해보세요.",
+                "예상치 못한 곳에서 사랑의 기운을 느낄 수 있을 것입니다.",
+                "오늘은 당신의 매력이 빛을 발할 수 있는 날입니다.",
+                "사랑하는 사람에게 작은 선물로 마음을 표현해보세요.",
+                "오늘은 연애에 있어 중요한 결정을 내릴 수 있는 날입니다.",
+                "혼자만의 시간을 보내며 자신의 감정을 정리해보세요.",
+                "연인과의 대화가 깊어질 수 있는 날입니다. 진솔한 대화를 나누어보세요.",
+                "사랑이 가득한 하루가 될 수 있으니 로맨틱한 시간을 보내세요.",
+                "오늘은 평소보다 솔직하게 사랑을 표현하는 것이 중요합니다.",
+                "새로운 인연이 당신을 기다리고 있을 수 있습니다.",
+                "소중한 사람과의 오해를 풀 수 있는 좋은 기회가 올 것입니다.",
+                "사랑하는 이에게 더 많은 관심을 기울여야 할 때입니다.",
+                "오랜 인연이 다시 찾아올 수 있는 날입니다.",
+                "연인과의 특별한 추억을 쌓을 수 있는 날입니다."
+            ],
+            money: [
+                "재물운이 상승하는 날입니다. 예상치 못한 이득이 있을 수 있어요.",
+                "오늘은 지출 계획을 세우기 좋은 날입니다. 예산을 꼼꼼히 관리해보세요.",
+                "투자에 관심을 가져보세요. 좋은 기회를 잡을 수 있습니다.",
+                "예상치 못한 지출이 있을 수 있지만, 나중에 이득으로 돌아올 것입니다.",
+                "금전적 문제를 해결할 실마리를 찾을 수 있는 날입니다.",
+                "오늘은 절약이 중요한 날입니다. 충동 구매를 피하세요.",
+                "오랜 재정 계획을 수정하거나 검토해볼 필요가 있습니다.",
+                "돈과 관련된 중요한 결정을 내리기 전에 신중하게 생각하세요.",
+                "금전적 여유가 생기는 날이니, 그동안 망설였던 투자를 시작해보세요.",
+                "재정적으로 어려움을 겪었다면 오늘 해결될 수 있습니다.",
+                "작은 절약이 나중에 큰 도움을 줄 수 있습니다. 계획을 세워보세요.",
+                "금전적 여유가 생기면서 원하는 것을 이룰 수 있을 것입니다.",
+                "돈과 관련된 좋은 소식이 들려올 수 있습니다.",
+                "재정적인 안정을 찾을 수 있는 방법을 고민해보세요.",
+                "오늘은 돈을 모으기 좋은 날입니다. 목표를 세워보세요.",
+                "예상치 못한 금전적 이득이 생길 수 있는 기회가 올 것입니다.",
+                "큰 지출을 피하고 예산을 잘 관리하면 좋은 결과가 따를 것입니다.",
+                "장기적인 재테크를 고려해보세요. 전문가의 조언이 도움이 될 수 있습니다.",
+                "돈과 관련된 결정을 내릴 때 신중하게 선택해야 할 날입니다.",
+                "금전적으로 안정된 하루를 보내며 계획을 세울 수 있습니다."
+            ],
+            work: [
+                "직장에서 당신의 노력이 빛을 발하는 날입니다.",
+                "새로운 프로젝트를 시작하기에 좋은 날입니다. 창의력을 발휘해보세요.",
+                "오늘은 동료들과의 협력으로 큰 성과를 낼 수 있는 날입니다.",
+                "업무에 집중하면 예상보다 더 빠르게 목표를 달성할 수 있습니다.",
+                "팀워크가 중요한 날입니다. 주변 사람들과의 소통에 신경 써보세요.",
+                "오늘은 새로운 기술을 배우거나 자기계발에 시간을 투자하기 좋은 날입니다.",
+                "업무에서 큰 진전을 이룰 수 있는 기회가 찾아옵니다.",
+                "스트레스 관리가 필요한 날입니다. 휴식도 중요합니다.",
+                "당신의 아이디어가 빛을 발할 수 있는 날입니다. 자신 있게 제시해보세요.",
+                "오늘은 중요한 결정이나 회의를 하기에 적합한 날입니다.",
+                "일에서 성취감을 느낄 수 있는 날이니 최선을 다해보세요.",
+                "동료들과의 관계가 원활하게 풀리며 큰 성과를 낼 수 있습니다.",
+                "업무에서 작은 성공을 이루며 동기부여가 될 것입니다.",
+                "계획했던 일이 순조롭게 진행되며 목표를 달성할 수 있습니다.",
+                "오늘은 새로운 도전이 당신을 기다리고 있습니다. 두려워하지 마세요.",
+                "업무에서 리더십을 발휘해야 하는 중요한 순간이 올 수 있습니다.",
+                "당신의 노력이 결실을 맺는 순간이 찾아옵니다. 성취감을 느껴보세요.",
+                "작은 목표를 이루면서 점진적으로 큰 성과를 낼 수 있습니다.",
+                "동료들과의 팀워크가 중요한 날입니다. 협력을 통해 큰 성과를 이룰 수 있습니다.",
+                "오늘은 시간 관리가 중요한 날입니다. 효율적으로 일정을 관리하세요."
+            ],
+            health: [
+                "활력이 넘치는 하루가 될 것입니다. 신체적으로도 건강한 날입니다.",
+                "오늘은 건강에 신경 써야 할 때입니다. 규칙적인 운동을 시작해보세요.",
+                "정신 건강을 챙기기 좋은 날입니다. 명상이나 요가를 시도해보세요.",
+                "신체와 정신의 균형을 맞추는 데 집중해보세요.",
+                "식습관을 개선하고 건강한 식단을 유지하는 것이 중요합니다.",
+                "오늘은 충분한 휴식이 필요한 날입니다. 무리하지 마세요.",
+                "스트레스 관리에 집중하세요. 마음의 안정을 찾는 시간이 필요합니다.",
+                "규칙적인 운동이 필요한 날입니다. 간단한 산책부터 시작해보세요.",
+                "건강한 생활 습관을 유지하는 데 신경을 써야 할 때입니다.",
+                "충분한 수면이 중요합니다. 일찍 잠자리에 들어보세요.",
+                "오늘은 건강을 위한 계획을 세우기 좋은 날입니다.",
+                "규칙적인 운동과 건강한 식단이 오늘의 에너지를 높여줄 것입니다.",
+                "스트레스를 줄이고 마음의 평화를 찾는 것이 중요합니다.",
+                "과도한 활동은 피하고, 오늘은 몸을 편안하게 쉬게 하세요.",
+                "건강 검진을 받기 좋은 날입니다. 미루지 말고 챙겨보세요.",
+                "피로가 쌓일 수 있는 날이니 충분한 휴식이 필요합니다.",
+                "오늘은 신체적 건강뿐만 아니라 정신적 휴식도 중요합니다.",
+                "몸에 무리가 가지 않도록 적절한 휴식을 취하세요.",
+                "정기적으로 건강 상태를 체크하고 개선할 부분을 찾아보세요.",
+                "충분한 물을 섭취하고, 건강한 생활 습관을 유지하세요."
+            ]
+        };
 
 
-        function getRandomFortune() {
-            return fortunes[Math.floor(Math.random() * fortunes.length)];
+        function getFortuneForCategory(date, name, category) {
+            const dateString = date.toISOString().split('T')[0];
+            const seed = dateString + name + category;
+            let hash = 0;
+            for (let i = 0; i < seed.length; i++) {
+                const char = seed.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return fortuneCategories[category][Math.abs(hash) % fortuneCategories[category].length];
         }
 
         function setFortune(name) {
-            let fortune = localStorage.getItem('fortune');
-            if (!fortune) {
-                fortune = getRandomFortune();
-                localStorage.setItem('fortune', fortune);
-            }
-            document.getElementById('name').textContent = name;
-            document.getElementById('fortune').textContent = fortune;
+            const today = new Date();
+            const categories = ['overall', 'love', 'money', 'work', 'health'];
+            
+            // Set overall fortune
+            const overallFortune = getFortuneForCategory(today, name, 'overall');
+            document.getElementById('overall').textContent = overallFortune;
+
+            // Set other fortunes
+            const fortunesHtml = categories.slice(1).map(category => {
+                const fortune = getFortuneForCategory(today, name, category);
+                return `
+                    <div class="fortune-category">
+                        <h2><span class="icon">${getCategoryIcon(category)}</span>${getCategoryName(category)}</h2>
+                        <p>${fortune}</p>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('name').textContent = `${name}님의 운세입니다`;
+            document.getElementById('fortunes').innerHTML = fortunesHtml;
+            document.getElementById('date').textContent = today.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function getCategoryName(category) {
+            const categoryNames = {
+                overall: '총운',
+                love: '애정운',
+                money: '재물운',
+                work: '직장운',
+                health: '건강운'
+            };
+            return categoryNames[category];
+        }
+
+        function getCategoryIcon(category) {
+            const categoryIcons = {
+                love: '❤️',
+                money: '💰',
+                work: '💼',
+                health: '🏥'
+            };
+            return categoryIcons[category];
         }
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const name = urlParams.get('name') || '방문자';
             setFortune(name);
-
-            document.getElementById('newFortuneBtn').addEventListener('click', function() {
-                localStorage.removeItem('fortune');
-                setFortune(name);
-            });
         }
     </script>
 </body>
